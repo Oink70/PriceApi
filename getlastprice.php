@@ -78,39 +78,28 @@ $ticker = array(
 
 // Build array of exchanges to include
 $exch_data = array(
-    'digitalprice' => array(
-        'url' => 'https://digitalprice.io/api/markets?baseMarket=BTC',
-        'top' => 'data',
-        'base' => null,
-        'price' => 'priceLast',
-        'volume' => 'volumeBase', // BTC volume
-        'code' => 'url',
-        'market' => array(
-			'vrsc' => 'vrsc-btc',
-			'arrr' => 'arrr-btc',
-		),
-    ),
-    'stex' => array(
-        'url' => 'https://app.stex.com/api2/ticker',
+   'graviex' => array(
+        'url' => 'https:/graviex.net/api/v3/tickers',
         'top' => null,
         'base' => null,
         'price' => 'last',
-        'volume' => 'vol_market', // BTC volume
-        'code' => 'market_name',
+        'volume' => 'volume2', // BTC volume
+        'code' => 'name',
         'market' => array(
-			'vrsc' => 'VRSC_BTC',
-		),
+            'vrsc' => 'VRSC/BTC',
+            'kmd' => 'KMD/BTC',
+            'zec' => 'ZEC/BTC',
+        ),
     ),
-    'cryptobridge' => array(
-        'url' => 'https://api.crypto-bridge.org/api/v1/ticker',
-        'top' => null,
+     'stex' => array(
+        'url' => 'https://app.stex.com/api3/public/ticker',
+        'top' => 'data',
         'base' => null,
         'price' => 'last',
         'volume' => 'volume', // BTC volume
-        'code' => 'id',
+        'code' => 'symbol',
         'market' => array(
 			'vrsc' => 'VRSC_BTC',
-			'arrr' => 'ARRR_BTC',
 		),
     ),
     'binance' => array(
