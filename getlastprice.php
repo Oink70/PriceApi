@@ -70,7 +70,7 @@ $fiatexchange = "https://bitpay.com/api/rates";
 // Setup supported coins and default fiat
 $currency = 'USD';
 $ticker = array(
-	'vrsc',
+    'vrsc',
     'arrr',
     'kmd',
     'zec',
@@ -78,7 +78,20 @@ $ticker = array(
 
 // Build array of exchanges to include
 $exch_data = array(
-   'graviex' => array(
+  'AtomicDEX' => array(
+    'url' => 'https://dexapi.cipig.net/public/ticker_24h.php',
+    'top' => null,
+    'base' => null,
+    'price' => 'lastPrice',
+    'volume' => 'quoteVolume', // BTC volume
+    'code' => 'market',
+    'market' => array(
+      'vrsc' => 'VRSC-BTC',
+      'zec' => 'ZEC-BTC',
+      'kmd' => 'KMD-BTC',
+    ),
+  ),
+  'graviex' => array(
         'url' => 'https:/graviex.net/api/v3/tickers',
         'top' => null,
         'base' => null,
