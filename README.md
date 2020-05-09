@@ -1,11 +1,12 @@
-# PriceApi - Latest Price Data for VRSC, ARRR, ZEC
+# PriceApi - Latest Price Data for VRSC, ARRR, KMD, ZEC
 
- - Contributors: J Oliver Westbrook
- - Copyright: Copyright (c) 2019, John Oliver Westbrook 
- - Version: 0.1.4
+ - Creator: J Oliver Westbrook
+ - Contributors: Oink70 & Monkins
+ - Copyright: Copyright (c) 2019, John Oliver Westbrook
+ - Version: 0.1.5
 
 ## The MIT License (MIT)
- 
+
 Copyright (c) 2019 John Oliver Westbrook
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -48,32 +49,39 @@ For simple VRSC-Fiat price data, simply request the fiat currency of your choice
 
 For access to the latest raw price data, for example to access via a curl request, call `rawpricedata.php` which returns the json formatted avg price data, includes date stamp of when the price was retrieved, along with individual exchange price and volume data.
 
-### Options (values are case insensitive): 
+### Options (values are case insensitive):
 
 * currency - BTC or Fiat code like USD or CAD
 * ticker - ARRR, VRSC, KMD, and ZEC are supported
 * data - volume or price - volume only relevant if exchange is defined
-* exch - name of supported exchange, e.g. digitalprice - If no exchange, price is average of all supported for that coin.
+* exch - name of supported exchange, e.g. AtomicDEX - If no exchange, price is average of all supported for that coin.
 
 If no options are set, the default is average price in USD fiat of VRSC.
 
 ### Examples:
 
-https://veruspay.io/api/ - This get's the current price of VRSC in USD, weighted against 24hr volume across all exchanges. This is the default return.
+https://veruspay.veruscoin.io/ - This get's the current price of VRSC in USD, weighted against 24hr volume across all exchanges. This is the default return.
 
-https://veruspay.io/api/?exch=digitalprice&currency=cad - This will get the current price on digital price for VRSC and display in CAD fiat
+https://veruspay.veruscoin.io/?exch=AtomicDEX&currency=cad - This will get the current price on digital price for VRSC and display in CAD fiat
 
-https://veruspay.io/api/?currency=btc - This will get the average price of VRSC in BTC, weighted by 24 hr volume across both exchanges
+https://veruspay.veruscoin.io/?currency=btc - This will get the average price of VRSC in BTC, weighted by 24 hr volume across both exchanges
 
-https://veruspay.io/api/?currency=cad - This gets the current average price of VRSC in CAD, weighted by 24 hr volume across both exchanges
+https://veruspay,veruscoin.io/?currency=cad - This gets the current average price of VRSC in CAD, weighted by 24 hr volume across both exchanges
 
-https://veruspay.io/api/?exch=cryptobridge&data=volume - This will get the 24 volume of VRSC on CryptoBridge in the default currency of USD
+https://veruspay.veruscoin.io/?exch=AtomicDEX&data=volume - This will get the 24 volume of VRSC on CryptoBridge in the default currency of USD
 
-https://veruspay.io/api/?exch=cryptobridge&data=volume&currency=btc - This does the same but with BTC as the currency result
+https://veruspay.veruscoin.io/?exch=AtomicDEX&data=volume&currency=btc - This does the same but with BTC as the currency result
 
-https://veruspay.io/api/?currency=cad&ticker=arrr - Gets the average price of ARRR, now added to the api!
+https://veruspay.veruscoin.io/api/?currency=cad&ticker=arrr - Gets the average price of ARRR, now added to the api!
 
 ## Changelog
+
+### 2020.05.09 - version 0.1.5
+
+ - Added CoinGecko as source for exchanges known to CoinGecko
+ - Added AtomicDEX api for BTC volume
+ - retired calls to other individual CEXs
+ - added `ext` folder with coin PNGs
 
 ### 2019.03.22 - version 0.1.4
 
@@ -91,7 +99,7 @@ https://veruspay.io/api/?currency=cad&ticker=arrr - Gets the average price of AR
 
 ### 2019.02.26 - version 0.1.1
 
-- 24-hour volume-weighted price data (no volume has no impact on price, all others have percentage weight on average price based on percentage of volume) *Thanks to https://github.com/miketout for this suggestion!
+- 24-hour volume-weighted price data (no volume has no impact on price, all others have percentage weight on average price based on percentage of volume) *Thanks to https://github.com/miketout for this suggestion!*
 - Fix bug with USD default price data
 - Add support for future features with more price and volume data
 - Simplified CURL calls and functions
@@ -99,7 +107,7 @@ https://veruspay.io/api/?currency=cad&ticker=arrr - Gets the average price of AR
 ### 2019.02.18 - version 0.1.0
 
 - Initial release with base features
-- Exchange support for DigitalPrice, AACoin, STEX, and Crypto-Bridge. 
+- Exchange support for DigitalPrice, AACoin, STEX, and Crypto-Bridge.
 - Fiat prices calculated from bitpay.  
 - Script at index.php can accept GET or POST for specific exchange last price and for currency.
 - Date stamp recorded on each new price output.

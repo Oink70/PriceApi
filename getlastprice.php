@@ -5,28 +5,30 @@
  * @category Cryptocurrency
  * @package  VerusPriceApi
  * @author   J Oliver Westbrook <johnwestbrook@pm.me>
+ * @contributor Oink70
+ * @contributor Monkins
  * @copyright Copyright (c) 2019, John Oliver Westbrook
- * @version 0.1.4
- * @link     https://github.com/joliverwestbrook/VerusPriceApi
- * 
- * This application allows the getting of average, volume weighted Verus market price from included exchanges and outputting to a file for remote access. 
+ * @version 0.1.5
+ * @link     https://github.com/Oink70/PriceApi
+ *
+ * This application allows the getting of average, volume weighted Verus market price from included exchanges and outputting to a file for remote access.
  * Basic version includes average price data, exchange specific price data, and fiat prices
  * ====================
- * 
+ *
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2019 John Oliver Westbrook
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,14 +36,14 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- * 
+ *
  * ====================
- * 
+ *
  * Future Exchange Support:
  * --
- * 
+ *
  * Past - Deprecated Exchange Support:
- * 
+ *
  *  'aacoin' => array(
  *          'url' => 'https://api.aacoin.com/market/tickers',
  *          'top' => 'data',
@@ -55,7 +57,72 @@
  *		        'vrsc' => 'vrsc',
  *		        ),
  *      ),
- * 
+ *
+ *
+ * Disabled Exchanges (replaced by single coingecko call)
+ *
+ *  'graviex' => array(
+ *        'url' => 'https:/graviex.net/api/v3/tickers',
+ *        'top' => null,
+ *        'base' => null,
+ *        'price' => 'last',
+ *        'volume' => 'volume2', // BTC volume
+ *        'code' => 'name',
+ *        'market' => array(
+ *            'vrsc' => 'VRSC/BTC',
+ *            'kmd' => 'KMD/BTC',
+ *            'zec' => 'ZEC/BTC',
+ *        ),
+ *    ),
+ *     'stex' => array(
+ *        'url' => 'https://app.stex.com/api3/public/ticker',
+ *        'top' => 'data',
+ *        'base' => null,
+ *        'price' => 'last',
+ *        'volume' => 'volume', // BTC volume
+ *        'code' => 'symbol',
+ *        'market' => array(
+ *			'vrsc' => 'VRSC_BTC',
+ *		),
+ *    ),
+ *    'binance' => array(
+ *        'url' => 'https://www.binance.com/api/v1/ticker/24hr',
+ *        'top' => null,
+ *        'base' => null,
+ *        'price' => 'lastPrice',
+ *        'volume' => 'volume', // BTC volume
+ *        'code' => 'symbol',
+ *        'market' => array(
+ *            'kmd' => 'KMDBTC',
+ *            'zec' => 'ZECBTC',
+ *        ),
+ *    ),
+ *    'bittrex' => array(
+ *        'url' => 'https://bittrex.com/api/v1.1/public/getmarketsummaries',
+ *        'top' => 'result',
+ *        'base' => null,
+ *        'price' => 'Last',
+ *        'volume' => 'BaseVolume', // BTC volume
+ *        'code' => 'MarketName',
+ *        'market' => array(
+ *			'kmd' => 'BTC-KMD',
+ *			'zec' => 'BTC-ZEC',
+ *		),
+ *    ),
+ *    'huobi' => array(
+ *        'url' => 'https://api.huobi.pro/market/tickers',
+ *        'top' => 'data',
+ *        'base' => null,
+ *        'price' => 'close',
+ *        'volume' => 'vol', // BTC volume
+ *        'code' => 'symbol',
+ *        'market' => array(
+ *			'kmd' => 'kmdbtc',
+ *			'zec' => 'zecbtc',
+ *		),
+ *    ),
+ *
+ *
  */
 global $connection_status;
 global $master_results;
@@ -76,8 +143,22 @@ $ticker = array(
     'zec',
 );
 
-// Build array of exchanges to include
+// Build array of exchanges (or dataproviders) to include
 $exch_data = array(
+  'CoinGecko' => array(
+    'url' => 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=btc&ids=verus-coin%2C%20pirate-chain%2C%20komodo%2C%20zcash&order=market_cap_desc&per_page=100&page=1&sparkline=false',
+    'top' => null,
+    'base' => null,
+    'price' => 'current_price',
+    'volume' => 'total_volume',
+    'code' => 'symbol',
+    'market' => array(
+      'zec' => 'zec',
+      'kmd' => 'kmd',
+      'vrsc' => 'vrsc',
+      'arrr' => 'arrr',
+    )
+  ),
   'AtomicDEX' => array(
     'url' => 'https://dexapi.cipig.net/public/ticker_24h.php',
     'top' => null,
@@ -91,67 +172,6 @@ $exch_data = array(
       'kmd' => 'KMD-BTC',
     ),
   ),
-  'graviex' => array(
-        'url' => 'https:/graviex.net/api/v3/tickers',
-        'top' => null,
-        'base' => null,
-        'price' => 'last',
-        'volume' => 'volume2', // BTC volume
-        'code' => 'name',
-        'market' => array(
-            'vrsc' => 'VRSC/BTC',
-            'kmd' => 'KMD/BTC',
-            'zec' => 'ZEC/BTC',
-        ),
-    ),
-     'stex' => array(
-        'url' => 'https://app.stex.com/api3/public/ticker',
-        'top' => 'data',
-        'base' => null,
-        'price' => 'last',
-        'volume' => 'volume', // BTC volume
-        'code' => 'symbol',
-        'market' => array(
-			'vrsc' => 'VRSC_BTC',
-		),
-    ),
-    'binance' => array(
-        'url' => 'https://www.binance.com/api/v1/ticker/24hr',
-        'top' => null,
-        'base' => null,
-        'price' => 'lastPrice',
-        'volume' => 'volume', // BTC volume
-        'code' => 'symbol',
-        'market' => array(
-            'kmd' => 'KMDBTC',
-            'zec' => 'ZECBTC',
-        ),
-    ),
-    'bittrex' => array(
-        'url' => 'https://bittrex.com/api/v1.1/public/getmarketsummaries',
-        'top' => 'result',
-        'base' => null,
-        'price' => 'Last',
-        'volume' => 'BaseVolume', // BTC volume
-        'code' => 'MarketName',
-        'market' => array(
-			'kmd' => 'BTC-KMD',
-			'zec' => 'BTC-ZEC',
-		),
-    ),
-    'huobi' => array(
-        'url' => 'https://api.huobi.pro/market/tickers',
-        'top' => 'data',
-        'base' => null,
-        'price' => 'close',
-        'volume' => 'vol', // BTC volume
-        'code' => 'symbol',
-        'market' => array(
-			'kmd' => 'kmdbtc',
-			'zec' => 'zecbtc',
-		),
-    ),
-
 );
 
 // Generate the price data for all included coins
@@ -188,7 +208,7 @@ function generatePriceData( $ticker, $currency, $fiatexchange, $exch_data ) {
 	// Output results to file in json format
     $ticker = strtolower( $ticker );
     $master_results[$ticker] = $price_results;
-	
+
 }
 // Write data to file
 file_put_contents( dirname(__FILE__) . '/rawpricedata.php', json_encode( $master_results, true ) );
